@@ -2,7 +2,7 @@ package org.lessons.java.pojo.abs;
 
 import java.time.LocalDate;
 
-public  class Evento {
+public abstract  class Evento {
     private String titolo;
     private LocalDate data;
     private int postiTotali;
@@ -69,6 +69,6 @@ public  class Evento {
 
     @Override
     public String toString() {
-        return String.format("%s - %s", getData(), getTitolo());
+        return String.format("%s", getData());
     }
 }
