@@ -6,17 +6,18 @@ import java.time.LocalTime;
 
 import org.lessons.java.pojo.Concerto;
 import org.lessons.java.pojo.abs.Evento;
+import org.lessons.java.pojo.ProgrammEventi;
 import java.util.Scanner;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
 		 Scanner in = new Scanner(System.in);
-
+		 ProgrammEventi program = new ProgrammEventi("Programma Eventi");
 	     
-		 boolean datiValidi = false;
+		 boolean datiValidi = true;
 		 Evento evento = null;
 
-		 while (!datiValidi) {
+		 while (datiValidi) {
 		     try {
 		         System.out.println("Inserisci i dettagli dell'evento:");
 		         System.out.print("Titolo: ");
@@ -42,7 +43,46 @@ public class Main {
 
 		      
 		         evento = new Concerto(titolo, data, postiTotali, ora, prezzo);
-		         datiValidi = true;
+		         program.aggiungiEvento(evento);
+		         System.out.println("Posti disponibili: "+ evento.getPostiTotali() );
+			        System.out.println("Quante prenotazioni vuoi fare?");
+			        int numPrenotazioni = in.nextInt();
+
+			        for (int i = 0; i < numPrenotazioni; i++) {
+			            try {
+			                evento.prenota();
+			                System.out.println("Prenotazione effettuata.");
+			            } catch (Exception e) {
+			                System.out.println("Errore: " + e.getMessage());
+			            }
+			        }
+
+			        System.out.println("Posti prenotati: " + evento.getPostiPrenotati());
+			        System.out.println("Posti disponibili: " + (evento.getPostiTotali() - evento.getPostiPrenotati()));
+
+			
+			        System.out.println("Quanti posti vuoi disdire?");
+			        int numDisdette = in.nextInt();
+			        in.nextLine();
+			        for (int i = 0; i < numDisdette; i++) {
+			            try {
+			                evento.disdici();
+			                System.out.println("Disdetta effettuata.");
+			            } catch (Exception e) {
+			                System.out.println("Errore: " + e.getMessage());
+			            }
+			        }
+		     
+			        System.out.println("Posti prenotati: " + evento.getPostiPrenotati());
+			        System.out.println("Posti disponibili: " + (evento.getPostiTotali() - evento.getPostiPrenotati()));	         
+		        
+		         System.out.println("Vuoi aggiungere un altro evento? (si/no): ");
+	                String risposta = in.nextLine().toLowerCase();
+
+	                if (risposta.equals("no")) {
+	                    datiValidi = false;
+	                }
+	              
 		     } catch (Exception e) {
 		         System.out.println("Errore nei dati inseriti: " + e.getMessage());
 		         System.out.println("Riprova.");
@@ -50,39 +90,34 @@ public class Main {
 		 }
 		 
 		 
-	        System.out.println("Posti disponibili: "+ evento.getPostiTotali() );
-	        System.out.println("Quante prenotazioni vuoi fare?");
-	        int numPrenotazioni = in.nextInt();
+		 boolean menuAttivo = true;
 
-	        for (int i = 0; i < numPrenotazioni; i++) {
-	            try {
-	                evento.prenota();
-	                System.out.println("Prenotazione effettuata.");
-	            } catch (Exception e) {
-	                System.out.println("Errore: " + e.getMessage());
-	            }
-	        }
+	        while (menuAttivo) {
+	            System.out.println("\n Menu:");
+	            System.out.println("1. Visualizza numero eventi nella lista");
+	            System.out.println("2. Svuota la lista degli eventi");
+	            System.out.println("3. Esci e visualizza la lista dei tuoi eventi");
 
-	        System.out.println("Posti prenotati: " + evento.getPostiPrenotati());
-	        System.out.println("Posti disponibili: " + (evento.getPostiTotali() - evento.getPostiPrenotati()));
+	            int sceltaMenu = in.nextInt();
+	            in.nextLine(); // 
 
-	
-	        System.out.println("Quanti posti vuoi disdire?");
-	        int numDisdette = in.nextInt();
-
-	        for (int i = 0; i < numDisdette; i++) {
-	            try {
-	                evento.disdici();
-	                System.out.println("Disdetta effettuata.");
-	            } catch (Exception e) {
-	                System.out.println("Errore: " + e.getMessage());
+	            switch (sceltaMenu) {
+	                case 1:
+	                    System.out.println("Numero di eventi nella lista: " + program.quantitaEventi());
+	                    break;
+	                case 2:
+	                    program.svuotaEventi();
+	                    System.out.println("La lista degli eventi è stata svuotata.");
+	                    break;
+	                case 3:
+	                    menuAttivo = false;
+	                    break;
+	                default:
+	                    System.out.println("Scelta non valida. Riprova.");
 	            }
 	        }
 
 	        in.close();
-	        System.out.println("Posti prenotati: " + evento.getPostiPrenotati());
-	        System.out.println("Posti disponibili: " + (evento.getPostiTotali() - evento.getPostiPrenotati()));
-	 
-	        System.out.println(evento.toString());
-    }
+	        System.out.println(program.toString());
+	}
 }
